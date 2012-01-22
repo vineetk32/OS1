@@ -13,6 +13,7 @@ mkotyad Munawira Kotyad */
 #define MYTHREAD_STACK_SIZE 1024
 
 typedef unsigned long int pthread_t;
+typedef unsigned long int mythread_t;
 
 //This is unused anyway, so assign anything to it.
 typedef int mythread_attr_t;
@@ -27,10 +28,27 @@ enum MLOGLEVEL
 
 enum MERRORSTATES
 {
-	MNOERR = 0
+	MNOERR = 0,
 	MERR_MALLOC,
 	MERR_LOG,
 	MERR_CLONE
 };
+
+enum MTHREADSTATE
+{
+	NONE = 0,
+	RUNNING,
+	BLOCKED
+};
+
+typedef struct mythread_helper_t
+{
+	mythread_t pid;
+	char *threadStack;
+	//Will be used later when the thread Q is implemented as a doubly-linked list.
+	struct mythread_helper_t *prev,*next;
+	enum MTHREADSTATE currState;
+	//Add more variables here.
+} mythread_helper_t;
 
 #endif

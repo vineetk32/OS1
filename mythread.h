@@ -14,9 +14,16 @@
 #endif
 
 #include <sys/types.h>
-#include "myqueue.h"
+//#include "myqueue.h"
 #include "futex.h"
-#include "linklist_kv.h"
+//#include "linklist_kv.h"
+#include "mythread_defines.h"
+
+#include <signal.h>
+#include <sched.h>
+#include <unistd.h>
+#include <string.h>
+#include <stdlib.h>
 
 /* Keys for thread-specific data */
 typedef unsigned int mythread_key_t;
@@ -74,7 +81,7 @@ int mythread_key_create(mythread_key_t *key, void (*destructor)(void*));
  * The  mythread_key_delete()  function shall delete a thread-specific data
  * key previously returned by  mythread_key_create().  The  thread-specific
  * data  values  associated  with  key  need  not  be  NULL  at  the  time
- * mythread_key_delete() is called.  It is the responsibility of the appli‐
+ * mythread_key_delete() is called.  It is the responsibility of the appli
  * cation  to  free any application storage or perform any cleanup actions
  * for data structures related to the deleted key  or  associated  thread-
  * specific data in any threads; this cleanup can be done either before or
@@ -94,11 +101,11 @@ void *mythread_getspecific(mythread_key_t key);
  * mythread_setspecific - thread-specific data management
  * The  mythread_setspecific()  function  shall associate a thread-specific
  * value with a key obtained via a previous call to  mythread_key_create().
- * Different threads may bind different values to the same key. These val‐
+ * Different threads may bind different values to the same key. These val
  * ues are typically pointers to blocks of  dynamically  allocated  memory
  *that have been reserved for use by the calling thread.
  */
 int mythread_setspecific(mythread_key_t key, const void *value);
 
-
+int writeLog(char *sourceFunction,enum MLOGLEVEL loglevel,char *logStr);
 #endif /* MYTHREAD_H */
