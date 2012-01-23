@@ -24,6 +24,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <stdlib.h>
+#include "util.h"
 
 /* Keys for thread-specific data */
 typedef unsigned int mythread_key_t;
@@ -107,5 +108,4 @@ void *mythread_getspecific(mythread_key_t key);
  */
 int mythread_setspecific(mythread_key_t key, const void *value);
 
-int writeLog(char *sourceFunction,enum MLOGLEVEL loglevel,char *logStr);
 #endif /* MYTHREAD_H */

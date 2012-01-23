@@ -18,13 +18,6 @@ typedef unsigned long int mythread_t;
 //This is unused anyway, so assign anything to it.
 typedef int mythread_attr_t;
 
-enum MLOGLEVEL
-{
-	MINFO = 0,
-	MWARNING,
-	MERROR,
-	MSEVERE
-};
 
 enum MERRORSTATES
 {
@@ -36,10 +29,19 @@ enum MERRORSTATES
 
 enum MTHREADSTATE
 {
-	NONE = 0,
+	NEW = 0,
+	READY,
 	RUNNING,
-	BLOCKED
+	WAITING,
+	TERMINATED
 };
+
+typedef struct mythread_tcb
+{
+	struct mythread_helper *head;
+	unsigned int currThread;
+	//Add more later
+} mythread_tcb_t;
 
 typedef struct mythread_helper_t
 {
