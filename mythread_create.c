@@ -12,7 +12,7 @@ mkotyad Munawira Kotyad */
 
 mythread_tcb_t mythread_tcb;
 
-int helloClone(void *test)
+void *helloClone(void *test)
 {
 	char *text;
 	int myPid;
@@ -26,14 +26,34 @@ int helloClone(void *test)
 	return 0;
 }
 
+int functionWrapper(void *arg)
+{
+	wrapper_package_t *package = (wrapper_package_t *) arg;
+	package->start_func();
+	return 0;
+}
+
+
 int mythread_create(mythread_t *new_thread_ID, mythread_attr_t *attr,void * (*start_func)(void *),void *arg)
 {
 	int clone_flags;
+	wrapper_package_t package;
+	unsigned long stackSize;
 	
-	//TODO: Write a helper_init() function.
-	mythread_helper_t *newThread = (mythread_helper_t *) malloc (sizeof(mythread_helper_t));
+	mythread_helper_t *newThread;
+	mythread_helper_init(newThread);
 
-	newThread->threadStack = (char *) malloc(MYTHREAD_STACK_SIZE * sizeof (char *));
+	//Take the stack size of the thread from attr, if it exists.
+	if (*attr != NULL)
+	{
+		stackSize = *attr;
+	}
+	else
+	{
+		stackSize = SIGSTKSZ;
+	}
+
+	newThread->threadStack = (char *) malloc(stackSize * sizeof (char *));
 	if (newThread->threadStack == NULL)
 	{
 		printf("\nERROR: Failed malloc!");
@@ -41,7 +61,7 @@ int mythread_create(mythread_t *new_thread_ID, mythread_attr_t *attr,void * (*st
 	}
 
 	//Stack grows downwards, so clone needs to be given the highest mem address.
-	 newThread->threadStack += MYTHREAD_STACK_SIZE;
+	 newThread->threadStack += stackSize;
 
 	/* From libpthread::createthread.c
 	
@@ -56,12 +76,15 @@ int mythread_create(mythread_t *new_thread_ID, mythread_attr_t *attr,void * (*st
 
 	clone_flags = (CLONE_FS | CLONE_FILES |  CLONE_VM);
 
+
 	// Call clone to start the thread and set its state as running.
-	newThread->pid = clone(&helloClone,(char *) newThread->threadStack,clone_flags,"Vineet");
+	package.arg = arg;
+	package.start_func = start_func;
+	newThread->pid = clone(&functionWrapper,(char *) newThread->threadStack,clone_flags,package);
 
 	newThread->currState = RUNNING;
 
-	if ( newThread->pid == -1)
+	if (newThread->pid == -1)
 	{
 		free(newThread->threadStack);
 		writeLog(__func__,VSEVERE,"Clone Failed");
@@ -75,10 +98,9 @@ int main()
 	mythread_t testThreads[5];
 	int i;
 
-	mythread_tcb.currThread = 0;
 	for(i = 0; i < 5; i++)
 	{
-		if (mythread_create(&testThreads[i],NULL,NULL,NULL) != MNOERR)
+		if (mythread_create(&testThreads[i],NULL,NULL,"World") != MNOERR)
 		{
 			writeLog(__func__,VINFO,"Exiting");
 		}

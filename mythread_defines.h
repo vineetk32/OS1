@@ -8,15 +8,11 @@ mkotyad Munawira Kotyad */
 #ifndef __MYTHREAD_DEFINES
 #define __MYTHREAD_DEFINES
 
-//Max stack size per-thread
-//TODO: use this as upper boundary for mmap later.
-#define MYTHREAD_STACK_SIZE 1024
-
 typedef unsigned long int pthread_t;
 typedef unsigned long int mythread_t;
 
-//This is unused anyway, so assign anything to it.
-typedef int mythread_attr_t;
+//This is used only to hold the stacksize
+typedef unsigned long mythread_attr_t;
 
 
 enum MERRORSTATES
@@ -35,6 +31,12 @@ enum MTHREADSTATE
 	WAITING,
 	TERMINATED
 };
+
+typedef struct wrapper_package
+{
+	void * (*start_func)(void *);
+	void *arg;
+} wrapper_package_t;
 
 typedef struct mythread_helper
 {

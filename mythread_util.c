@@ -1,4 +1,4 @@
-#include "util.h"
+#include "mythread_util.h"
 
 int splitLine(const char *in, char **out,const char *delim)
 {
@@ -73,3 +73,30 @@ int writeLog(char *sourceFunction,enum VLOGLEVEL loglevel,char *logStr)
 	strcat(text,logStr);
 	return write(1,text,strlen(text));
 }
+
+int mythread_helper_init(mythread_helper_t *helper)
+{
+	if ( (helper = (mythread_helper_t *) malloc (sizeof(mythread_helper_t))) == NULL)
+	{
+		return MERR_MALLOC;
+	}
+	else
+	{
+		helper->currState = NEW;
+		helper->next = NULL;
+		helper->prev = NULL;
+		helper->pid = -1;
+		helper->threadStack = NULL;
+	}
+}
+
+void mythread_helper_destroy(mythread_helper_t *helper)
+{
+	free(helper);
+	helper->currState = TERMINATED;
+	helper->next = NULL;
+	helper->prev = NULL;
+	helper->pid = -1;
+	helper->threadStack = NULL;
+}
+

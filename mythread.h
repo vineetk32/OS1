@@ -24,7 +24,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <stdlib.h>
-#include "util.h"
+#include "mythread_util.h"
 
 /* Keys for thread-specific data */
 typedef unsigned int mythread_key_t;
@@ -73,7 +73,7 @@ void mythread_exit(void *retval);
  * mythread_key_create()  are opaque objects used to locate thread-specific
  * data. Although the same key value may be used by different threads, the
  * values  bound  to  the key by mythread_setspecific() are maintained on a
- *per-thread basis and persist for the life of the calling thread.
+ * per-thread basis and persist for the life of the calling thread.
  */
 int mythread_key_create(mythread_key_t *key, void (*destructor)(void*));
 

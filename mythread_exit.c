@@ -18,10 +18,6 @@ mythread_tcb_t mythread_tcb;
 void mythread_exit(void *retval)
 {
 	mythread_q_remove_specific(mythread_tcb.currThread->pid);
-	
-	mythread_tcb.currThread->currState = TERMINATED;
-	mythread_tcb.currThread->next = NULL;
-	mythread_tcb.currThread->prev = NULL;
-
-	free(mythread_tcb.currThread->threadStack);
+	mythread_helper_destroy(mythread_tcb.currThread);
+	//TODO: what should mythread_tcb.currThread be set to?
 }
