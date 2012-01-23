@@ -36,21 +36,20 @@ enum MTHREADSTATE
 	TERMINATED
 };
 
-typedef struct mythread_tcb
-{
-	struct mythread_helper *head;
-	unsigned int currThread;
-	//Add more later
-} mythread_tcb_t;
-
-typedef struct mythread_helper_t
+typedef struct mythread_helper
 {
 	mythread_t pid;
 	char *threadStack;
-	//Will be used later when the thread Q is implemented as a doubly-linked list.
 	struct mythread_helper_t *prev,*next;
 	enum MTHREADSTATE currState;
 	//Add more variables here.
 } mythread_helper_t;
+
+typedef struct mythread_tcb
+{
+	mythread_helper_t *head,*tail;
+	mythread_helper_t *currThread;
+	//Add more later
+} mythread_tcb_t;
 
 #endif

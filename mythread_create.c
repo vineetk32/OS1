@@ -1,6 +1,15 @@
+/* This file has been edited and contributed to by everyone, so it doesn't have any single author info.
+
+Single Author Info:
+vineet Vineet Krishnan
+
+Group info:
+vgumash Vaibhav Gumashta
+mkotyad Munawira Kotyad */
+
+
 #include "mythread.h"
 
-mythread_helper_t threads[10];
 mythread_tcb_t mythread_tcb;
 
 int helloClone(void *test)
@@ -8,7 +17,7 @@ int helloClone(void *test)
 	char *text;
 	int myPid;
 	
-	text = (char *) malloc (sizeof(char) * (strlen(test) + 16));
+	text = (char *) malloc (sizeof(char) * (strlen((char *)test) + 16));
 	myPid = getpid();
 
 	sprintf(text,"\n%d:Hello, %s\n",myPid,(char *) test);
@@ -20,18 +29,20 @@ int helloClone(void *test)
 int mythread_create(mythread_t *new_thread_ID, mythread_attr_t *attr,void * (*start_func)(void *),void *arg)
 {
 	int clone_flags;
+	
+	//TODO: Write a helper_init() function.
+	mythread_helper_t *newThread = (mythread_helper_t *) malloc (sizeof(mythread_helper_t));
 
-	threads[mythread_tcb.currThread].threadStack = (char *) malloc(MYTHREAD_STACK_SIZE * sizeof (char *));
-	if (threads[mythread_tcb.currThread].threadStack == NULL)
+	newThread->threadStack = (char *) malloc(MYTHREAD_STACK_SIZE * sizeof (char *));
+	if (newThread->threadStack == NULL)
 	{
 		printf("\nERROR: Failed malloc!");
 		return (int) MERR_MALLOC;
 	}
 
 	//Stack grows downwards, so clone needs to be given the highest mem address.
-	 threads[mythread_tcb.currThread].threadStack += MYTHREAD_STACK_SIZE;
+	 newThread->threadStack += MYTHREAD_STACK_SIZE;
 
-	
 	/* From libpthread::createthread.c
 	
 	CLONE_VM, CLONE_FS, CLONE_FILES
@@ -40,15 +51,22 @@ int mythread_create(mythread_t *new_thread_ID, mythread_attr_t *attr,void * (*st
 	
 	*/
 
+	//Add the thread to the Queue
+	 mythread_q_append(newThread);
+
 	clone_flags = (CLONE_FS | CLONE_FILES |  CLONE_VM);
 
-	threads[mythread_tcb.currThread].pid = clone(&helloClone,(char *) threads[mythread_tcb.currThread].threadStack,clone_flags,"Vineet");
-	if ( threads[mythread_tcb.currThread].pid == -1)
+	// Call clone to start the thread and set its state as running.
+	newThread->pid = clone(&helloClone,(char *) newThread->threadStack,clone_flags,"Vineet");
+
+	newThread->currState = RUNNING;
+
+	if ( newThread->pid == -1)
 	{
-		free(threads[mythread_tcb.currThread].threadStack);
+		free(newThread->threadStack);
 		writeLog(__func__,VSEVERE,"Clone Failed");
 	}
-	mythread_tcb.currThread++;
+
 	return (int) MNOERR;
 }
 
