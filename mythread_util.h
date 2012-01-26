@@ -20,10 +20,8 @@ enum VLOGLEVEL
 	VSEVERE
 };
 
-int splitLine(const char *in, char **out,const char *delim);
-int arrayContains(const char **array, const char *element, int arrayLen);
 int writeLog(char *sourceFunction,enum VLOGLEVEL loglevel,char *logStr);
-int mythread_helper_init(mythread_helper_t *helper);
+enum MERRORSTATE mythread_helper_init(mythread_helper_t *helper);
 void mythread_helper_destroy(mythread_helper_t *helper);
 
 #endif

@@ -1,5 +1,4 @@
-/* This file has been edited and contributed to by everyone, so it doesn't have any single author info.
-
+/* 
 Single Author Info:
 vineet Vineet Krishnan
 
@@ -9,15 +8,15 @@ mkotyad Munawira Kotyad */
 
 
 #include "mythread.h"
-#include "myqueue.h"
 
-mythread_tcb_t mythread_tcb;
+extern mythread_queue_t *mythread_queue;
 
 //Clean up all data structures, and set appropriate states.
 //TODO: Lots
 void mythread_exit(void *retval)
 {
-	mythread_q_remove_specific(mythread_tcb.currThread->pid);
-	mythread_helper_destroy(mythread_tcb.currThread);
+	mythread_q_remove_specific(mythread_queue,mythread_queue->currThread->pid);
+	mythread_helper_destroy(mythread_queue->currThread);
 	//TODO: what should mythread_tcb.currThread be set to?
+	return;
 }

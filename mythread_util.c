@@ -1,37 +1,12 @@
+/* This file has been edited and contributed to by everyone, so it doesn't have any single author info.
+
+Group info:
+vineet Vineet Krishnan
+vgumash Vaibhav Gumashta
+mkotyad Munawira Kotyad */
+
+
 #include "mythread_util.h"
-
-int splitLine(const char *in, char **out,const char *delim)
-{
-	int i = 0;
-	char *ptr, *saveptr;
-	char tempBuff[BUFFER_SIZE] = {'\0'};
-	strcpy(tempBuff,in);
-
-	ptr = strtok_r(tempBuff,delim,&saveptr);
-	while (ptr != NULL)
-	{
-		out[i][0] = '\0';
-		strcpy(out[i],ptr);
-		i++;
-		ptr = strtok_r(NULL,delim,&saveptr);
-
-	}
-	return i;
-
-}
-
-int arrayContains(const char **array, const char *element, int arrayLen)
-{
-	int i;
-	for (i = 0; i < arrayLen; i++)
-	{
-		if (strcmp(array[i],element) == 0)
-		{
-			return i;
-		}
-	}
-	return -1;
-}
 
 int writeLog(char *sourceFunction,enum VLOGLEVEL loglevel,char *logStr)
 {
@@ -74,10 +49,11 @@ int writeLog(char *sourceFunction,enum VLOGLEVEL loglevel,char *logStr)
 	return write(1,text,strlen(text));
 }
 
-int mythread_helper_init(mythread_helper_t *helper)
+enum MERRORSTATE mythread_helper_init(mythread_helper_t *helper)
 {
-	if ( (helper = (mythread_helper_t *) malloc (sizeof(mythread_helper_t))) == NULL)
+	if ( helper == NULL)
 	{
+		//TODO: Change return code
 		return MERR_MALLOC;
 	}
 	else
@@ -86,17 +62,17 @@ int mythread_helper_init(mythread_helper_t *helper)
 		helper->next = NULL;
 		helper->prev = NULL;
 		helper->pid = -1;
-		helper->threadStack = NULL;
+		helper->hasJoiners = 0;
+		futex_init(&helper->thread_futex,1);
 	}
 }
 
 void mythread_helper_destroy(mythread_helper_t *helper)
 {
-	free(helper);
 	helper->currState = TERMINATED;
 	helper->next = NULL;
 	helper->prev = NULL;
 	helper->pid = -1;
 	helper->threadStack = NULL;
+	free(helper);
 }
-
