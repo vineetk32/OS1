@@ -10,7 +10,6 @@ mkotyad Munawira Kotyad */
 
 #include "futex.h"
 
-typedef unsigned long int pthread_t;
 typedef unsigned long int mythread_t;
 
 //This is used only to hold the stacksize

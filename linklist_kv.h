@@ -4,6 +4,7 @@
 #define __LINKLIST_KV
 
 #include "mythread_defines.h"
+#include <stdlib.h>
 
 //Forward declarations
 struct mythread_keyval;

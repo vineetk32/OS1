@@ -15,44 +15,42 @@ static int __isInit;
 //THE "idle" thread.
 mythread_t idle_thread;
 
-//Main thread.
-mythread_helper_t *main_thread;
-
-
 enum MERRORSTATE mythread_swapcontext(mythread_helper_t *currThread)
 {
 	//Stop the current thread and move it to the back of the queue
 	mythread_q_move_to_end(mythread_queue,currThread);
-	futex_down(&currThread->thread_futex);
 	currThread->currState = READY;
 	
-	//Start the next thread
-	__dispatcher();
-}
-
-
-//Dispatcher get the topmost ready thread in the queue and runs it.
-void __dispatcher()
-{
 	mythread_queue->currThread = mythread_q_get_highest_ready_thread(mythread_queue);
 
 	//Hopefully, this wont happen.
 	if (mythread_queue->currThread->pid != idle_thread)
 	{
 		mythread_queue->currThread->currState = RUNNING;
+		
+		//Stop the current guy, and wake up the new guy
+		futex_down(&currThread->thread_futex);
 		futex_up(&mythread_queue->currThread->thread_futex);
 	}
-	return;
+	return MNOERR;
+
 }
 
 
 //TODO: What about the idle threads futex??
 void *idler_function(void *argument)
 {
-	//TODO: Replace this with a mythread_yield().
-	//Just call the dispatcher
-	__dispatcher();
-	//TODO - replace this call with a better "mythread_swapcontext
+	//Yield to any *other* thread
+	if (mythread_q_count(mythread_queue) > 2)	//Main thread and idle thread
+	{
+		mythread_yield();
+	}
+	else
+	{
+		//TODO: Clean up and exit.
+		exit(0);
+	}
+	return NULL;
 }
 
 void *helloClone(void *test)
@@ -61,7 +59,7 @@ void *helloClone(void *test)
 	int myPid;
 	
 	text = (char *) malloc (sizeof(char) * (strlen((char *)test) + 16));
-	myPid = getpid();
+	myPid = mythread_self();
 
 	sprintf(text,"\n%d:Hello, %s\n",myPid,(char *) test);
 	write(1,text,strlen(text));
@@ -76,8 +74,8 @@ int __functionWrapper(void *argument)
 {
 	wrapper_package_t *package = (wrapper_package_t *) argument;
 
-	//Dispatcher will set this futex.
-	futex_up(&package->thisThread->thread_futex);
+	//We're in the queue. Sleep until its our turn
+	futex_down(&package->thisThread->thread_futex);
 	package->start_func(package->arg);
 	
 	return 0;
@@ -95,11 +93,13 @@ int mythread_create(mythread_t *new_thread_ID, mythread_attr_t *attr,void * (*st
 	//First call to mythread_create should init the idle thread.
 	if (__isInit == 0)
 	{
+		//Main thread.
+		mythread_helper_t *main_thread;
+
 		//Allocate the thread queue first.
 		mythread_queue = (mythread_queue_t *) malloc (sizeof(mythread_queue_t));
 		//Add the main thread to it
-		//TODO: Does the main_thread really need to be global var?
-		__add_main_thread();
+		__add_main_thread(main_thread);
 		__isInit = 1;
 		mythread_create(&idle_thread,NULL,idler_function,NULL);
 	}
@@ -142,6 +142,7 @@ int mythread_create(mythread_t *new_thread_ID, mythread_attr_t *attr,void * (*st
 	// Call clone to start the thread and set its state as ready.
 	package.arg = arg;
 	package.start_func = start_func;
+	package.thisThread = newThread;
 	
 	newThread->currState = READY;
 	if (mythread_q_count(mythread_queue) == 0)
@@ -181,7 +182,7 @@ int main()
 }
 
 
-enum MERRORSTATE __add_main_thread()
+enum MERRORSTATE __add_main_thread(mythread_helper_t *main_thread)
 {
 	mythread_t tid;
 	tid = getpid();

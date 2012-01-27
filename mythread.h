@@ -106,9 +106,8 @@ void *mythread_getspecific(mythread_key_t key);
 int mythread_setspecific(mythread_key_t key, const void *value);
 
 enum MERRORSTATE mythread_swapcontext(mythread_helper_t *currThread);
-void __dispatcher();
 void *idler_function(void *argument);
 int __functionWrapper(void *argument);
-enum MERRORSTATE __add_main_thread();
+enum MERRORSTATE __add_main_thread(mythread_helper_t *main_thread);
 
 #endif /* MYTHREAD_H */

@@ -19,5 +19,7 @@ mythread_helper_t *mythread_q_find(mythread_queue_t *queue,mythread_t tid);
 int mythread_q_remove_specific(mythread_queue_t *queue,mythread_t tid);
 unsigned int mythread_q_count(mythread_queue_t *queue);
 
-int mythread_q_move_to_end(mythread_queue_t *queue,mythread_helper_t *currElement);
+void mythread_q_move_to_end(mythread_queue_t *queue,mythread_helper_t *currElement);
+mythread_helper_t *mythread_q_get_highest_ready_thread(mythread_queue_t *queue);
+
 #endif

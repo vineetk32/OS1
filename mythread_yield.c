@@ -23,7 +23,7 @@ int mythread_yield(void)
     currNode->currState = READY;
     // Place currNode at the end of the queue
     mythread_q_append(mythread_queue, currNode); 
-    // Call the dispatcher to run the next highest ready element
-    __dispatcher(); 
+    //Run the next read-to-run thread.
+    mythread_swapcontext(currNode);
     return 0;
 }

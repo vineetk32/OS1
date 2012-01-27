@@ -51,6 +51,7 @@ int mythread_q_remove_specific(mythread_queue_t *queue,mythread_t tid)
 	{
 		return -1;
 	}
+	return 0;
 }
 
 //Get a particular thread in the queue by its threadID
@@ -61,7 +62,7 @@ mythread_helper_t *mythread_q_find(mythread_queue_t *queue,mythread_t tid)
 	currNode = queue->tail;
 	while (currNode->next != NULL)
 	{
-		if (currNode->pid = tid)
+		if (currNode->pid == tid)
 		{
 			break;
 		}
@@ -88,7 +89,7 @@ unsigned int mythread_q_count(mythread_queue_t *queue)
 }
 
 //Moves an element to the head of the queue (which is the "end" of the queue)
-int mythread_q_move_to_end(mythread_queue_t *queue,mythread_helper_t *currElement)
+void mythread_q_move_to_end(mythread_queue_t *queue,mythread_helper_t *currElement)
 {
 	currElement->next->prev = currElement->prev;
 	currElement->prev->next = currElement->next;

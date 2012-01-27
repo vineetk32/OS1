@@ -65,6 +65,7 @@ enum MERRORSTATE mythread_helper_init(mythread_helper_t *helper)
 		helper->hasJoiners = 0;
 		futex_init(&helper->thread_futex,0);
 	}
+	return MNOERR;
 }
 
 void mythread_helper_destroy(mythread_helper_t *helper)
