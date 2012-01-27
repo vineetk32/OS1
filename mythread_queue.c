@@ -87,6 +87,17 @@ unsigned int mythread_q_count(mythread_queue_t *queue)
 	return count;
 }
 
+//Moves an element to the head of the queue (which is the "end" of the queue)
+int mythread_q_move_to_end(mythread_queue_t *queue,mythread_helper_t *currElement)
+{
+	currElement->next->prev = currElement->prev;
+	currElement->prev->next = currElement->next;
+
+	currElement->prev = queue->head;
+	currElement->next = NULL;
+	queue->head = currElement;
+}
+
 //Get the highest ready element in the queue
 mythread_helper_t *mythread_q_get_highest_ready_thread(mythread_queue_t *queue)
 {
@@ -102,15 +113,4 @@ mythread_helper_t *mythread_q_get_highest_ready_thread(mythread_queue_t *queue)
 		currNode = currNode->next;
 	}
 	return currNode;
-}
-
-//Moves an element to the head of the queue (which is the "end" of the queue)
-int mythread_q_move_to_end(mythread_queue_t *queue,mythread_helper_t *currElement)
-{
-	currElement->next->prev = currElement->prev;
-	currElement->prev->next = currElement->next;
-
-	currElement->prev = queue->head;
-	currElement->next = NULL;
-	queue->head = currElement;
 }

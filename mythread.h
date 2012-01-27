@@ -16,7 +16,7 @@
 #include <sys/types.h>
 #include "mythread_queue.h"
 #include "futex.h"
-//#include "linklist_kv.h"
+#include "linklist_kv.h"
 #include "mythread_defines.h"
 
 #include <signal.h>
@@ -25,9 +25,6 @@
 #include <string.h>
 #include <stdlib.h>
 #include "mythread_util.h"
-
-/* Keys for thread-specific data */
-typedef unsigned int mythread_key_t;
 
 /* add your code here */
 

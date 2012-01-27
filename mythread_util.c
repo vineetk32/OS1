@@ -63,7 +63,7 @@ enum MERRORSTATE mythread_helper_init(mythread_helper_t *helper)
 		helper->prev = NULL;
 		helper->pid = -1;
 		helper->hasJoiners = 0;
-		futex_init(&helper->thread_futex,1);
+		futex_init(&helper->thread_futex,0);
 	}
 }
 

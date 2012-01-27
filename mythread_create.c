@@ -77,7 +77,7 @@ int __functionWrapper(void *argument)
 	wrapper_package_t *package = (wrapper_package_t *) argument;
 
 	//Dispatcher will set this futex.
-	futex_down(&package->thisThread->thread_futex);
+	futex_up(&package->thisThread->thread_futex);
 	package->start_func(package->arg);
 	
 	return 0;

@@ -20,9 +20,3 @@ int mythread_join(mythread_t target_thread, void **status)
 	joinee_thread->hasJoiners++;
 	mythread_swapcontext(mythread_queue->currThread);
 }
-
-mythread_t mythread_self(void)
-{
-	return (mythread_queue->currThread->pid);
-
-}
