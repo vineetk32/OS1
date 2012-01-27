@@ -7,7 +7,7 @@ vineet Vineet Krishnan
 mkotyad Munawira Kotyad */
 
 /*
-    mythread_yield - switch from running thread to the next ready one
+mythread_yield - switch from running thread to the next ready one
 */
 
 #include "mythread.h"
