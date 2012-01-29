@@ -60,7 +60,7 @@ mythread_helper_t *mythread_q_find(mythread_queue_t *queue,mythread_t tid)
 	//Start at the tail and keep going ahead.
 	mythread_helper_t *currNode;
 	currNode = queue->tail;
-	while (currNode->next != NULL)
+	while (currNode != NULL)
 	{
 		if (currNode->pid == tid)
 		{
@@ -88,13 +88,40 @@ unsigned int mythread_q_count(mythread_queue_t *queue)
 	return count;
 }
 
+//Get the total count of threads in the ready state.
+unsigned int mythread_q_get_ready_count(mythread_queue_t *queue)
+{
+	unsigned int count = 0;
+	mythread_helper_t *currNode;
+	currNode = queue->tail;
+	if (currNode == NULL)
+	{
+		return 0;
+	}
+	while (currNode->next != NULL)
+	{
+		currNode = currNode->next;
+		if (currNode->currState == READY)
+		{
+			count++;
+		}
+	}
+	return count;
+}
+
 //Moves an element to the head of the queue (which is the "end" of the queue)
 void mythread_q_move_to_end(mythread_queue_t *queue,mythread_helper_t *currElement)
 {
 	currElement->next->prev = currElement->prev;
-	currElement->prev->next = currElement->next;
 
+	if (currElement != queue->tail)
+	{
+		currElement->prev->next = currElement->next;
+	}
+	queue->tail = currElement->next;
 	currElement->prev = queue->head;
+	queue->head->next = currElement;
+
 	currElement->next = NULL;
 	queue->head = currElement;
 }

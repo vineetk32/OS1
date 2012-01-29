@@ -8,7 +8,9 @@ mkotyad Munawira Kotyad */
 
 #include "mythread_util.h"
 
-int writeLog(char *sourceFunction,enum VLOGLEVEL loglevel,char *logStr)
+int _system_log_level;
+
+int writeLog(const char *sourceFunction,enum VLOGLEVEL loglevel,char *logStr)
 {
 	char *text;
 	struct tm *timeVal;
@@ -20,7 +22,7 @@ int writeLog(char *sourceFunction,enum VLOGLEVEL loglevel,char *logStr)
 	
 	currTime = time(NULL);
 	timeVal = localtime(&currTime);
-	strftime(timeBuff,64,"\n%Y%m%d %H:%M:%S|",timeVal);
+	strftime(timeBuff,64,"%Y%m%d %H:%M:%S|",timeVal);
 	strcpy(text,timeBuff);
 
 	
@@ -41,12 +43,20 @@ int writeLog(char *sourceFunction,enum VLOGLEVEL loglevel,char *logStr)
 	{
 		strcat(text,"INFO|");
 	}
-	
+	else if (loglevel == VDEBUG)
+	{
+		strcat(text,"DEBUG|");
+	}
 	strcat(text,sourceFunction);
 	strcat(text,"|");
 
 	strcat(text,logStr);
-	return write(1,text,strlen(text));
+	strcat(text,"\n");
+	//if (_system_log_level & loglevel == loglevel)
+	//{
+		write(1,text,strlen(text));
+	//}
+	return 0;
 }
 
 enum MERRORSTATE mythread_helper_init(mythread_helper_t *helper)

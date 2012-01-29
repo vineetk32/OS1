@@ -17,12 +17,9 @@ extern mythread_queue_t *mythread_queue;
 int mythread_yield(void) 
 {
     mythread_helper_t *currNode = mythread_queue->currThread;
-    // mythread_helper_t *nextReadyNode = mythread_q_get_highest_ready_thread(mythread_queue); 
-    // Give processor control to the nextReadyNode (??? what all should we do here)
+    // Give processor control to the nextReadyNode
     // Change the currNode's state to READY
     currNode->currState = READY;
-    // Place currNode at the end of the queue
-    mythread_q_append(mythread_queue, currNode); 
     //Run the next read-to-run thread.
     mythread_swapcontext(currNode);
     return 0;

@@ -14,6 +14,7 @@
 #endif
 
 #include <sys/types.h>
+#include <sys/syscall.h>
 #include "mythread_queue.h"
 #include "futex.h"
 #include "linklist_kv.h"
@@ -104,6 +105,8 @@ void *mythread_getspecific(mythread_key_t key);
  *that have been reserved for use by the calling thread.
  */
 int mythread_setspecific(mythread_key_t key, const void *value);
+
+int mythread_set_loglevel(int log_level);
 
 enum MERRORSTATE mythread_swapcontext(mythread_helper_t *currThread);
 void *idler_function(void *argument);

@@ -15,6 +15,7 @@ extern mythread_queue_t *mythread_queue;
 //TODO: Lots
 void mythread_exit(void *retval)
 {
+
 	mythread_q_remove_specific(mythread_queue,mythread_queue->currThread->pid);
 	mythread_helper_destroy(mythread_queue->currThread);
 	//TODO: what should mythread_tcb.currThread be set to?

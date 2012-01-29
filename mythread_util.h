@@ -14,13 +14,14 @@
 
 enum VLOGLEVEL
 {
-	VINFO = 0,
-	VWARNING,
-	VERROR,
-	VSEVERE
+	VINFO = 1,
+	VWARNING = 2,
+	VERROR = 4,
+	VSEVERE = 8,
+	VDEBUG = 16
 };
 
-int writeLog(char *sourceFunction,enum VLOGLEVEL loglevel,char *logStr);
+int writeLog(const char *sourceFunction,enum VLOGLEVEL loglevel,char *logStr);
 enum MERRORSTATE mythread_helper_init(mythread_helper_t *helper);
 void mythread_helper_destroy(mythread_helper_t *helper);
 

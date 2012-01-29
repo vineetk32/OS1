@@ -21,5 +21,6 @@ unsigned int mythread_q_count(mythread_queue_t *queue);
 
 void mythread_q_move_to_end(mythread_queue_t *queue,mythread_helper_t *currElement);
 mythread_helper_t *mythread_q_get_highest_ready_thread(mythread_queue_t *queue);
+unsigned int mythread_q_get_ready_count(mythread_queue_t *queue);
 
 #endif
