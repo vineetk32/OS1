@@ -63,8 +63,7 @@ typedef struct mythread_helper
 	enum MTHREADSTATE currState;
 	//Add more variables here.
 	struct futex thread_futex;
-	//No idea where i'm going to use this.
-	int hasJoiners;
+	mythread_t joiner_thread;
 	int hasChildren;
 } mythread_helper_t;
 

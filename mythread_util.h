@@ -14,6 +14,7 @@
 
 enum VLOGLEVEL
 {
+	NONE = 0,
 	VINFO = 1,
 	VWARNING = 2,
 	VERROR = 4,
