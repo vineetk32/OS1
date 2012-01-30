@@ -14,14 +14,11 @@ int writeLog(const char *sourceFunction,enum VLOGLEVEL loglevel,char *logStr)
 {
 	if (_system_log_level > NONE)
 	{
-		char *text;
+		char text[512];
 		struct tm *timeVal;
 		time_t currTime;
-		char *timeBuff;
+		char timeBuff[64];
 
-		text = (char *) malloc (sizeof(char) * (strlen(logStr) + strlen(sourceFunction) + (strlen("YYYYMMDD HH:MM:SS") + 8)));
-		timeBuff = (char *) malloc (sizeof(char) * (strlen("YYYYMMDD HH:MM:SS") + 5));
-	
 		currTime = time(NULL);
 		timeVal = localtime(&currTime);
 		strftime(timeBuff,64,"%Y%m%d %H:%M:%S|",timeVal);
@@ -58,8 +55,6 @@ int writeLog(const char *sourceFunction,enum VLOGLEVEL loglevel,char *logStr)
 		{
 			write(1,text,strlen(text));
 		}
-		free(text);
-		free(timeBuff);
 	}
 	return 0;
 }

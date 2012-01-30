@@ -14,7 +14,7 @@ int mythread_key_delete(mythread_key_t key)
 {
  
 	int id;
-	id = key.keyID;
+	id = key.keyID;	
 
 	mythread_keyval_t *currKeyVal;
 	currKeyVal= (mythread_keyval_t *)malloc(sizeof(mythread_keyval_t));
@@ -22,17 +22,18 @@ int mythread_key_delete(mythread_key_t key)
 	mythread_key_t *currKey;
 	currKey = (mythread_key_t *)malloc(sizeof(mythread_key_t *));
 		
-	currKey = mythread_key_helper->headkey;	
-	
+	currKey = mythread_key_helper.headkey;	
 	/*Identifying the right key*/	
-	while(currKey != mythread_key_helper->tailkey)
-	{
+	while(currKey != mythread_key_helper.tailkey)
+	{	
 		if(currKey->keyID == id)
 		{
 			break;
 		}
 		currKey = currKey->next;
 	}
+	
+	
 	
 	/*Free the Key memory*/
 	free(currKey->mythread_keyval_helper);

@@ -41,14 +41,13 @@ typedef struct mythread_key_helper
 
 }mythread_key_helper_t;
 
-mythread_key_helper_t *mythread_key_helper; 
+
 typedef struct mythread_keyval_helper
 {
 	mythread_keyval_t *headkeyval,*tailkeyval,*currkeyval;
 
 }mythread_keyval_helper_t;
 
-
-
+mythread_key_helper_t mythread_key_helper;
 	
 #endif

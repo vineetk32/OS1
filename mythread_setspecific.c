@@ -17,6 +17,7 @@ int mythread_setspecific(mythread_key_t key, const void *val)
 	int id;
 	
 	id = key.keyID;
+	//printf("In setspecific 1\n");
 	/*currKeyVal iterates through the values of all the threads*/
 	mythread_keyval_t *currKeyVal;
 	currKeyVal = (mythread_keyval_t *) malloc(sizeof(mythread_keyval_t));
@@ -24,14 +25,17 @@ int mythread_setspecific(mythread_key_t key, const void *val)
 	/*currKey iterayes through the values of all the keys */
 	mythread_key_t *currKey;
 	currKey = (mythread_key_t *)malloc(sizeof(mythread_key_t *));
-		
+	//printf("In setspecific 2\n");	
 	/*Identifying the right key*/
-	currKey = mythread_key_helper->headkey;	
+	currKey = mythread_key_helper.headkey;	
 	
-	while(currKey != mythread_key_helper->tailkey)
+	while(currKey != mythread_key_helper.tailkey)
 	{	
+		//printf("In setspecific 3\n");
+		//printf("The current key id is %d \n",currKey->keyID);
 		if(currKey->keyID == id)
 		{
+			//printf("The current key id is %d \n",currKey->keyID);
 			break;
 		}
 		currKey = currKey->next;

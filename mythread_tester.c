@@ -22,7 +22,7 @@ int main()
 	mythread_t testThreads[5];
 	int i;
 
-	mythread_set_loglevel(VDEBUG);
+	//mythread_set_loglevel(VDEBUG);
 	for(i = 0; i < 5; i++)
 	{
 		if (mythread_create(&testThreads[i],NULL,helloClone,"World") != MNOERR)
