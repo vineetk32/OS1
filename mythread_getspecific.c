@@ -1,26 +1,46 @@
-/*
- * mythread_getspecific - thread-specific data management
- * The mythread_getspecific() function shall  return  the  value  currently
- * bound to the specified key on behalf of the calling thread.
- */
-#include "linklist_kv.h" 
-#include "mythread_defines.h"
+/*Single Author Info:
+mkotyad Munawira Kotyad */
+
+/* Group info:
+vineet Vineet Krishnan
+vgumash Vaibhav Gumashta */
+
+
+#include "linklist_kv.h"
 
 extern mythread_queue_t *mythread_queue;
 
 void *mythread_getspecific(mythread_key_t key)
 {
-  //get the id of the current thread and return the value of that specific key val
-	//find the current thread
+	int id;
+	id = key.keyID;	
+
 	mythread_keyval_t *currKeyVal;
 	currKeyVal= (mythread_keyval_t *)malloc(sizeof(mythread_keyval_t));
-	  // get the id of the current thread and assign the value to that specific keyval
-	//Iterate through Key -> Keyval to find the thread that matches with the currThread
-	currKeyVal = key.mythread_keyval_helper->headkeyval;
 	
-	while(currKeyVal !=NULL)// or (currKeyVal != key.mythread_keyval_helper,tailkeyval)
-	{
-		if(currKeyVal->thread->pid = mythread_queue->currThread->pid)
+	mythread_key_t *currKey;
+	currKey = (mythread_key_t *)malloc(sizeof(mythread_key_t *));
+		
+	currKey = mythread_key_helper.headkey;	
+	/*Identifying the right key*/	
+	while(currKey != mythread_key_helper.tailkey)
+	{	
+		
+		if(currKey->keyID == id)
+		{
+			break;
+		}
+		currKey = currKey->next;
+		
+
+	}
+
+	currKeyVal = currKey->mythread_keyval_helper->headkeyval;
+	/*Identifying the right thread*/
+	while(currKeyVal->next != currKey->mythread_keyval_helper->tailkeyval)
+	{	
+		
+		if(currKeyVal->thread->pid == mythread_queue->currThread->pid)
 		{			
 			break;
 		}
@@ -29,8 +49,6 @@ void *mythread_getspecific(mythread_key_t key)
 	} 
 	
 	return(currKeyVal->value);
-/* Handle error conditions*/
-
 
 }
 

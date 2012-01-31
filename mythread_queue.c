@@ -41,8 +41,22 @@ int mythread_q_remove_specific(mythread_queue_t *queue,mythread_t tid)
 
 	if (nodeToRemove != NULL)
 	{
-		nodeToRemove->prev->next = nodeToRemove->next;
-		nodeToRemove->next->prev = nodeToRemove->prev;
+		if (nodeToRemove != queue->head)
+		{
+			nodeToRemove->next->prev = nodeToRemove->prev;
+		}
+		else
+		{
+			queue->head = nodeToRemove->prev;
+		}
+		if (nodeToRemove != queue->tail)
+		{
+			nodeToRemove->prev->next = nodeToRemove->next;
+		}
+		else
+		{
+			queue->tail = nodeToRemove->next;
+		}
 
 		nodeToRemove->next = NULL;
 		nodeToRemove->prev = NULL;
@@ -51,6 +65,7 @@ int mythread_q_remove_specific(mythread_queue_t *queue,mythread_t tid)
 	{
 		return -1;
 	}
+	return 0;
 }
 
 //Get a particular thread in the queue by its threadID
@@ -59,9 +74,9 @@ mythread_helper_t *mythread_q_find(mythread_queue_t *queue,mythread_t tid)
 	//Start at the tail and keep going ahead.
 	mythread_helper_t *currNode;
 	currNode = queue->tail;
-	while (currNode->next != NULL)
+	while (currNode != NULL)
 	{
-		if (currNode->pid = tid)
+		if (currNode->pid == tid)
 		{
 			break;
 		}
@@ -87,15 +102,65 @@ unsigned int mythread_q_count(mythread_queue_t *queue)
 	return count;
 }
 
-//Moves an element to the head of the queue (which is the "end" of the queue)
-int mythread_q_move_to_end(mythread_queue_t *queue,mythread_helper_t *currElement)
+//Get the total count of threads in the non-dead state.
+unsigned int mythread_q_get_alive_count(mythread_queue_t *queue)
 {
-	currElement->next->prev = currElement->prev;
-	currElement->prev->next = currElement->next;
+	unsigned int count = 0;
+	mythread_helper_t *currNode;
+	currNode = queue->tail;
+	if (currNode == NULL)
+	{
+		return 0;
+	}
+	while (currNode->next != NULL)
+	{
+		currNode = currNode->next;
+		if (currNode->currState != TERMINATED)
+		{
+			count++;
+		}
+	}
+	return count;
+}
 
-	currElement->prev = queue->head;
-	currElement->next = NULL;
-	queue->head = currElement;
+//Get the total count of threads in the ready state.
+unsigned int mythread_q_get_ready_count(mythread_queue_t *queue)
+{
+	unsigned int count = 0;
+	mythread_helper_t *currNode;
+	currNode = queue->tail;
+	if (currNode == NULL)
+	{
+		return 0;
+	}
+	while (currNode->next != NULL)
+	{
+		currNode = currNode->next;
+		if (currNode->currState != READY)
+		{
+			count++;
+		}
+	}
+	return count;
+}
+//Moves an element to the head of the queue (which is the "end" of the queue)
+void mythread_q_move_to_end(mythread_queue_t *queue,mythread_helper_t *currElement)
+{
+	if (currElement != queue->head)
+	{
+		currElement->next->prev = currElement->prev;
+
+		if (currElement != queue->tail)
+		{
+			currElement->prev->next = currElement->next;
+		}
+		queue->tail = currElement->next;
+		currElement->prev = queue->head;
+		queue->head->next = currElement;
+
+		currElement->next = NULL;
+		queue->head = currElement;
+	}
 }
 
 //Get the highest ready element in the queue
