@@ -15,4 +15,4 @@ a5: lib
 	$(CC) p5.c -o a5.x $(COMPILE_FLAGS) -lmythread $(LINKER_FLAGS)
 
 clean:
-	rm *.x *.o
+	rm  -f *.x *.o

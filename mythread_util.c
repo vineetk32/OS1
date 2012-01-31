@@ -12,7 +12,7 @@ int _system_log_level;
 
 int writeLog(const char *sourceFunction,enum VLOGLEVEL loglevel,char *logStr)
 {
-	if (_system_log_level > NONE)
+	if (_system_log_level != NONE)
 	{
 		char text[512];
 		struct tm *timeVal;

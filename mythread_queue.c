@@ -136,7 +136,7 @@ unsigned int mythread_q_get_ready_count(mythread_queue_t *queue)
 	while (currNode->next != NULL)
 	{
 		currNode = currNode->next;
-		if (currNode->currState != READY)
+		if (currNode->currState == READY)
 		{
 			count++;
 		}
@@ -154,7 +154,10 @@ void mythread_q_move_to_end(mythread_queue_t *queue,mythread_helper_t *currEleme
 		{
 			currElement->prev->next = currElement->next;
 		}
-		queue->tail = currElement->next;
+		else
+		{
+			queue->tail = currElement->next;
+		}
 		currElement->prev = queue->head;
 		queue->head->next = currElement;
 
@@ -169,7 +172,7 @@ mythread_helper_t *mythread_q_get_highest_ready_thread(mythread_queue_t *queue)
 	//Start at the tail and keep going ahead.
 	mythread_helper_t *currNode;
 	currNode = queue->tail;
-	while (currNode->next != NULL)
+	while (currNode != NULL)
 	{
 		if (currNode->currState == READY)
 		{

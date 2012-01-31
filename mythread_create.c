@@ -54,7 +54,7 @@ enum MERRORSTATE mythread_swapcontext(mythread_helper_t *currThread)
 	//This happens with the idle thread calls yield.
 	if (tempThread->pid != mythread_queue->currThread->pid)
 	{
-		//TODO: when all the READY threads are done, how will the WAITING threads be woken up?	
+		//TODO: when all the READY threads are done, how will the WAITING threads be woken up?
 		if (tempThread != NULL)
 		{
 			mythread_queue->currThread = tempThread;
@@ -72,9 +72,9 @@ enum MERRORSTATE mythread_swapcontext(mythread_helper_t *currThread)
 			writeLog(__func__,VDEBUG,logStr);
 			//Stop the current guy, and wake up the new guy
 			writeLog(__func__,VDEBUG,"Starting new thread");
-			futex_up(&mythread_queue->currThread->thread_futex);
+			futex_up(&(mythread_queue->currThread->thread_futex));
 			writeLog(__func__,VDEBUG,"Stopping current thread");
-			futex_down(&currThread->thread_futex);
+			futex_down(&(currThread->thread_futex));
 		}
 		else
 		{
@@ -99,7 +99,7 @@ void *idler_function(void *argument)
 	}
 	//TODO: Clean up and exit.
 	writeLog(__func__,VDEBUG,"idler: Cleaning up and quitting.");
-	exit(0);
+	//exit(0);
 	return NULL;
 }
 
@@ -134,7 +134,6 @@ int __functionWrapper(void *argument)
 		}
 	}
 	mythread_swapcontext(mythread_queue->currThread);
-
 	return 0;
 }
 
@@ -144,7 +143,6 @@ int mythread_create(mythread_t *new_thread_ID, mythread_attr_t *attr,void * (*st
 	int clone_flags;
 	wrapper_package_t *package;
 	unsigned long stackSize;
-	pid_t parent_pid;
 	mythread_helper_t *tempThread;
 	char logBuffer[128] = {'\0'};
 
@@ -294,7 +292,7 @@ enum MERRORSTATE __add_main_thread(mythread_helper_t *main_thread)
 		return MERR_GENERIC;
 	}
 	//Main thread is running, so set its futex.
-	futex_up(&main_thread->thread_futex);
+	//futex_up(&main_thread->thread_futex);
 	return MNOERR;
 }
 
